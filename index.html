@@ -6,10 +6,15 @@
     <title>Unity WebGL Player | TimFL</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+
+
+    <!-- Yandex Games SDK -->
+    <script src="https://yandex.ru/games/sdk/v2"></script>
+
   </head>
   <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <div id="unity-container" style = "position: absolute; width: 100%; height: 100%; left: 0%; top: 0%;">
+      <canvas id="unity-canvas" style = "position: absolute; width: 100%; height: 100%;"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -17,19 +22,54 @@
         </div>
       </div>
       <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">TimFL</div>
-      </div>
+     
     </div>
+
+    <script>
+    YaGames
+    .init()
+    .then(ysdk => {
+        console.log('Yandex SDK initialized');
+        window.ysdk = ysdk;
+    });
+
+
+    var player;
+
+function initPlayer() {
+    return ysdk.getPlayer().then(_player => {
+            player = _player;
+
+            return player;
+        });
+}
+
+initPlayer().then(_player => {
+        if (_player.getMode() === 'lite') {
+            // Игрок не авторизован.
+            ysdk.auth.openAuthDialog().then(() => {
+                    // Игрок успешно авторизован
+                    initPlayer().catch(err => {
+                        // Ошибка при инициализации объекта Player.
+                    });
+                }).catch(() => {
+                    // Игрок не авторизован.
+                });
+        }
+    }).catch(err => {
+        // Ошибка при инициализации объекта Player.
+    });
+    
+    </script>
+
+
     <script>
 
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      //var fullscreenButton = document.querySelector("#unity-fullscreen-button");
       var warningBanner = document.querySelector("#unity-warning");
 
       // Shows a temporary message banner/ribbon for a few seconds, or
@@ -57,11 +97,11 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/TimFL.loader.js";
+      var loaderUrl = buildUrl + "/GameBild.loader.js";
       var config = {
-        dataUrl: buildUrl + "/TimFL.data.unityweb",
-        frameworkUrl: buildUrl + "/TimFL.framework.js.unityweb",
-        codeUrl: buildUrl + "/TimFL.wasm.unityweb",
+        dataUrl: buildUrl + "/GameBild.data.unityweb",
+        frameworkUrl: buildUrl + "/GameBild.framework.js.unityweb",
+        codeUrl: buildUrl + "/GameBild.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "mancher7",
         productName: "TimFL",
@@ -88,14 +128,14 @@
 
         // To lower canvas resolution on mobile devices to gain some
         // performance, uncomment the following line:
-        // 
+        // config.devicePixelRatio = 1;
 
 
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
       }
 
       loadingBar.style.display = "block";
@@ -107,9 +147,9 @@
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {
                 loadingBar.style.display = "none";
-                fullscreenButton.onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
+               // fullscreenButton.onclick = () => {
+               //   unityInstance.SetFullscreen(1);
+               // };
               }).catch((message) => {
                 alert(message);
               });
