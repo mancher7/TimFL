@@ -31,6 +31,7 @@
     .then(ysdk => {
         console.log('Yandex SDK initialized');
         window.ysdk = ysdk;
+        auth();
     });
 
 
@@ -44,7 +45,9 @@ function initPlayer() {
         });
 }
 
-initPlayer().then(_player => {
+function auth()
+{
+  initPlayer().then(_player => {
         if (_player.getMode() === 'lite') {
             // Игрок не авторизован.
             ysdk.auth.openAuthDialog().then(() => {
@@ -59,7 +62,9 @@ initPlayer().then(_player => {
     }).catch(err => {
         // Ошибка при инициализации объекта Player.
     });
-    
+}
+
+
     </script>
 
 
@@ -139,6 +144,8 @@ initPlayer().then(_player => {
       }
 
       loadingBar.style.display = "block";
+      
+      var myGameInstance = null;
 
       var script = document.createElement("script");
       script.src = loaderUrl;
@@ -146,6 +153,8 @@ initPlayer().then(_player => {
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {
+
+                myGameInstance = unityInstance;
                 loadingBar.style.display = "none";
                // fullscreenButton.onclick = () => {
                //   unityInstance.SetFullscreen(1);
