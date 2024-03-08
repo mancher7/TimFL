@@ -7,12 +7,12 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
 
-
     <!-- Yandex Games SDK -->
     <script src="https://yandex.ru/games/sdk/v2"></script>
 
   </head>
   <body>
+   
       <div id="unity-container" style = "position: absolute; width: 100%; height: 100%; left: 0%; top: 0%;">
       <canvas id="unity-canvas" style = "position: absolute; width: 100%; height: 100%;"></canvas>
       <div id="unity-loading-bar">
@@ -22,10 +22,9 @@
         </div>
       </div>
       <div id="unity-warning"> </div>
-     
     </div>
 
-    <script>
+      <script>
     YaGames
     .init()
     .then(ysdk => {
@@ -34,39 +33,36 @@
         auth();
     });
 
-
     var player;
 
-function initPlayer() {
-    return ysdk.getPlayer().then(_player => {
-            player = _player;
+        function initPlayer() {
+            return ysdk.getPlayer().then(_player => {
+                    player = _player;
 
-            return player;
-        });
-}
-
-function auth()
-{
-  initPlayer().then(_player => {
-        if (_player.getMode() === 'lite') {
-            // РРіСЂРѕРє РЅРµ Р°РІС‚РѕСЂРёР·РѕРІР°РЅ.
-            ysdk.auth.openAuthDialog().then(() => {
-                    // РРіСЂРѕРє СѓСЃРїРµС€РЅРѕ Р°РІС‚РѕСЂРёР·РѕРІР°РЅ
-                    initPlayer().catch(err => {
-                        // РћС€РёР±РєР° РїСЂРё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РѕР±СЉРµРєС‚Р° Player.
-                    });
-                }).catch(() => {
-                    // РРіСЂРѕРє РЅРµ Р°РІС‚РѕСЂРёР·РѕРІР°РЅ.
+                    return player;
                 });
         }
-    }).catch(err => {
-        // РћС€РёР±РєР° РїСЂРё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РѕР±СЉРµРєС‚Р° Player.
-    });
-}
 
+        function auth() {
+        initPlayer().then(_player => {
+                if (_player.getMode() === 'lite') {
+                    // Игрок не авторизован.
+                    ysdk.auth.openAuthDialog().then(() => {
+                            // Игрок успешно авторизован
+                            initPlayer().catch(err => {
+                                // Ошибка при инициализации объекта Player.
+                            });
+                        }).catch(() => {
+                            // Игрок не авторизован.
+                        });
+                }
+        }).catch(err => 
+            {
+                // Ошибка при инициализации объекта Player.
+            });
+        }
 
-    </script>
-
+     </script>
 
     <script>
 
@@ -74,7 +70,7 @@ function auth()
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      //var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+     // var fullscreenButton = document.querySelector("#unity-fullscreen-button");
       var warningBanner = document.querySelector("#unity-warning");
 
       // Shows a temporary message banner/ribbon for a few seconds, or
@@ -102,11 +98,11 @@ function auth()
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/GameBild.loader.js";
+      var loaderUrl = buildUrl + "/TimFL.loader.js";
       var config = {
-        dataUrl: buildUrl + "/GameBild.data.unityweb",
-        frameworkUrl: buildUrl + "/GameBild.framework.js.unityweb",
-        codeUrl: buildUrl + "/GameBild.wasm.unityweb",
+        dataUrl: buildUrl + "/TimFL.data.unityweb",
+        frameworkUrl: buildUrl + "/TimFL.framework.js.unityweb",
+        codeUrl: buildUrl + "/TimFL.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "mancher7",
         productName: "TimFL",
@@ -133,7 +129,7 @@ function auth()
 
         // To lower canvas resolution on mobile devices to gain some
         // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
+        // 
 
 
       } else {
@@ -144,8 +140,8 @@ function auth()
       }
 
       loadingBar.style.display = "block";
-      
-      var myGameInstance = null;
+
+       var myGameInstance = null;
 
       var script = document.createElement("script");
       script.src = loaderUrl;
@@ -154,7 +150,8 @@ function auth()
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {
 
-                myGameInstance = unityInstance;
+              myGameInstance = unityInstance;
+
                 loadingBar.style.display = "none";
                // fullscreenButton.onclick = () => {
                //   unityInstance.SetFullscreen(1);
